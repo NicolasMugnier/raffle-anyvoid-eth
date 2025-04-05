@@ -3,6 +3,9 @@
     padding: 20px;
     text-align: center;
     color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header button {
@@ -13,8 +16,14 @@
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-    display: flex;
 }
 .header button:hover {
     background-color: #21a1f1;
+}
+
+.header .profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 20px;
 }

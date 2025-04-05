@@ -1,6 +1,20 @@
-import { JSX } from "react";
+import { JSX, useEffect, useState } from "react";
 import './Header.css';
 import FrameSDK from '@farcaster/frame-sdk';
+import { UserContext } from '@farcaster/frame-core/dist/context';
+
+const farcasterUser = async (): Promise<UserContext> => {
+    console.log("Fetching user context...");
+    const context = await FrameSDK.context;
+    const user: UserContext = context?.user;
+    console.log("User context received:", user);
+
+    if (!user?.fid) {
+        Promise.reject(new Error("User object is invalid or fid is missing."));
+    }
+
+    return user;
+}
 
 const shareFrame = (): void => {
     const url: string = 'https://warpcast.com/~/compose?text=Raffle%20Frame%20by%20%40anyvoid.eth&embeds[]=https://raffle.anyvoid.xyz';
@@ -8,8 +22,29 @@ const shareFrame = (): void => {
 }
 
 function Header(): JSX.Element {
+
+    const [username, setUsername] = useState<string | null>(null);
+    const [pfpUrl, setPfpUrl] = useState<string | null>(null);
+    // const [fid, setFid] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await farcasterUser();
+                setUsername(user.username ?? '');
+                setPfpUrl(user.pfpUrl ?? '');
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
     return (
         <div className="header">
+            <img className="profile-img" src={pfpUrl ?? 'https://raffle.anyvoid.xyz/splash.png'} alt={username ? username : ''}/>
+            <span className="username">{username ? username : "Loading..."}</span>
             <button className="share-button" onClick={shareFrame}>Share Frame</button>
         </div>
     );
