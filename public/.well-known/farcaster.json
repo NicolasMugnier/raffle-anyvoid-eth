@@ -1,0 +1,18 @@
+{
+    "accountAssociation": {
+      "header": "eyJmaWQiOjkwODUxNCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEVlODZjMDBFYmU1Njk1NGMxMDJlQTIwNzQ1NjZhZGEwQzIzNTU2RmIifQ",
+      "payload": "eyJkb21haW4iOiJyYWZmbGUuYW55dm9pZC54eXoifQ",
+      "signature": "MHg4YTdhNTgwNDYxMWJkZWRkODY3Y2QwMzExMjQ3NzdhMWUwZTg3YjFhNzZkY2NkYzA3M2FmYTgwODU5NThmNGJjMmYxODVhZmI0Zjg0Mzg0MTc5ZDhlOWZmZmY3ZjdjODdkMDFlNWFiZGZjODkxZTE0NWFiYWJiNzY5NTlhNDc2YzFj"
+    },
+    "frame": {
+      "version": "1",
+      "name": "Raffle",
+      "tagline": "Raffle party",
+      "iconUrl": "https://raffle.anyvoid.xyz/main.png",
+      "homeUrl": "https://raffle.anyvoid.xyz",
+      "imageUrl": "https://raffle.anyvoid.xyz/main.png",
+      "buttonTitle": "Raffle",
+      "splashImageUrl": "https://raffle.anyvoid.xyz/splash.png",
+      "splashBackgroundColor": "#242424"
+    }
+  }

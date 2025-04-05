@@ -1,0 +1,85 @@
+html, body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #242424;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+.container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin: auto auto;
+  height:100%;
+}
+.confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+input {
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  transition: border-color 0.25s;
+}
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+.wheel-container {
+  width: 80vw;
+  height: 80vw;
+  max-width: 445px;
+  max-height: 445px;
+  margin: auto;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+a {
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: underline;
+}
+a:hover {
+  text-decoration: none;
+}
