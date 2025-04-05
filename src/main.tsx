@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import FrameSDK from '@farcaster/frame-sdk';
 import './index.css';
 import App from './App.tsx';
+import Header from './Header.tsx';
 
 function FarcasterFrameProvider({ children }: { children: ReactNode }): JSX.Element {
   useEffect((): void => {
@@ -19,6 +20,7 @@ function FarcasterFrameProvider({ children }: { children: ReactNode }): JSX.Elem
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <FarcasterFrameProvider>
+      <Header />
       <App />
     </FarcasterFrameProvider>
   </StrictMode>,
