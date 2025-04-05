@@ -1,6 +1,6 @@
 .header {
     background-color: #282c34;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     color: white;
     display: flex;
@@ -8,22 +8,28 @@
     align-items: center;
 }
 
+.header .user-profile {
+    display: flex;
+    align-items: center;
+}
+
 .header button {
-    background-color: #61dafb;
-    color: black;
+    background-color: #7c65c1;
+    color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 5px 5px;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 12px;
 }
 .header button:hover {
-    background-color: #21a1f1;
+    background-color: #423466;
 }
 
 .header .profile-img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     margin-right: 20px;
+    border: 1px solid white;
 }

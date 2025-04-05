@@ -43,8 +43,10 @@ function Header(): JSX.Element {
 
     return (
         <div className="header">
-            <img className="profile-img" src={pfpUrl ?? 'https://raffle.anyvoid.xyz/splash.png'} alt={username ? username : ''}/>
-            <span className="username">{username ? username : "Loading..."}</span>
+            <div className="user-profile">
+                <img className="profile-img" src={pfpUrl ?? 'https://raffle.anyvoid.xyz/splash.png'} alt={username ? username : ''}/>
+                <span className="username">{username ? username : "Loading..."}</span>
+            </div>
             <button className="share-button" onClick={shareFrame}>Share Frame</button>
         </div>
     );
