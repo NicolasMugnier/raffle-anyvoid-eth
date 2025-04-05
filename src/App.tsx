@@ -45,10 +45,10 @@ function App(): JSX.Element {
           />
         </div>
       }
-      <h1>Spin the Wheel</h1>
+      <h1>Raffle</h1>
       {selectedLabel && <h2>Congratulations {selectedLabel} {emojis[Math.floor(Math.random() * emojis.length)]}</h2>}
       <button onClick={spinWheel} disabled={labels.length === 0 || spinning}>
-        Spin Wheel
+        Let's go!
       </button><br/>
       <input 
         type="text" 
@@ -79,7 +79,7 @@ function App(): JSX.Element {
           />
           </div>
         ) : (
-          <p>No participants available</p>
+          <p>No participant available</p>
         )}
       <ul>
         {labels.map((label, index) => (
@@ -90,7 +90,7 @@ function App(): JSX.Element {
         ))}
       </ul>
       <footer className="footer">
-        <p>&copy; 2025 - anyvoid.eth - View on <a href="https://github.com/NicolasMugnier/spin-wheel-anyvoid-eth">GitHub</a></p>
+        <p>&copy; 2025 - anyvoid.eth - View on <a href="https://github.com/NicolasMugnier/raffle-anyvoid-eth">GitHub</a></p>
       </footer>
     </div>
   );
