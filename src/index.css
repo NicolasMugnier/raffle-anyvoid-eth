@@ -2,7 +2,6 @@ html, body {
   margin: 0;
   justify-content: center;
   background-color: #242424;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
