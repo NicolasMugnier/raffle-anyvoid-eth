@@ -4,3 +4,17 @@
     text-align: center;
     color: white;
 }
+
+.header button {
+    background-color: #61dafb;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+}
+.header button:hover {
+    background-color: #21a1f1;
+}
