@@ -2,8 +2,7 @@ import { JSX, useState } from 'react';
 import { Wheel } from "react-custom-roulette";
 import Confetti from "react-confetti";
 import './Raffle.css';
-import { RaffleResult } from './RaffleResult';
-// import { RaffleResult } from './RaffleResult.tsx';
+// import { RaffleResult } from './RaffleResult';
 
 function Raffle(): JSX.Element {
   const [labels, setLabels] = useState<{ option: string, style: { backgroundColor: string } }[]>([]);
@@ -12,7 +11,7 @@ function Raffle(): JSX.Element {
   const [spinning, setSpinning] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
-  const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
+  // const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
 
   const addLabel = (): void => {
     if (newLabel.trim() !== "") {
@@ -34,7 +33,7 @@ function Raffle(): JSX.Element {
     setSpinning(true);
     const selectedIndex = Math.floor(Math.random() * labels.length);
     setPrizeNumber(selectedIndex);
-    const raffleResult: RaffleResult = {
+    /**const raffleResult: RaffleResult = {
       owner: {
         username: "anyvoid.eth",
         fid: 1,
@@ -44,8 +43,8 @@ function Raffle(): JSX.Element {
         name: labels[selectedIndex].option,
       },
       date: new Date().toISOString(),
-    };
-    setRaffleResult(raffleResult);
+    };**/
+    // setRaffleResult(raffleResult);
   };
 
   const emojis: string[] = ["🎉", "🎊", "🏆", "🥳", "👏", "🔥"];
