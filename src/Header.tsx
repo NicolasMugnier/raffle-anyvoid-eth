@@ -10,7 +10,7 @@ const farcasterUser = async (): Promise<UserContext> => {
     console.log("User context received:", user);
 
     if (!user?.fid) {
-        Promise.reject(new Error("User object is invalid or fid is missing."));
+        throw new Error("User object is invalid or fid is missing.");
     }
 
     return user;
@@ -29,13 +29,12 @@ function Header(): JSX.Element {
 
     useEffect(() => {
         const fetchUser = async () => {
-            try {
-                const user = await farcasterUser();
+            await farcasterUser().then((user: UserContext) => {
                 setUsername(user.username ?? '');
                 setPfpUrl(user.pfpUrl ?? '');
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
+            }).catch((error: Error) => {
+                console.log(error);
+            });
         };
 
         fetchUser();
@@ -44,7 +43,7 @@ function Header(): JSX.Element {
     return (
         <div className="header">
             <div className="user-profile">
-                <img className="profile-img" src={pfpUrl ?? 'https://raffle.anyvoid.xyz/splash.png'} alt={username ? username : ''}/>
+                <img className="profile-img" src={pfpUrl ?? 'https://raffle.anyvoid.xyz/splash.png'} alt={username ? username : ''} />
                 <span className="username">{username ? username : "Loading..."}</span>
             </div>
             <button className="share-button" onClick={shareFrame}>Share Frame</button>

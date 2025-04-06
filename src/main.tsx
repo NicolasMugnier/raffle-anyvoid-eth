@@ -2,8 +2,9 @@ import { StrictMode, useEffect, ReactNode, JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import FrameSDK from '@farcaster/frame-sdk';
 import './index.css';
-import App from './App.tsx';
+import Raffle from './Raffle.tsx';
 import Header from './Header.tsx';
+import Footer from './Footer.tsx';
 
 function FarcasterFrameProvider({ children }: { children: ReactNode }): JSX.Element {
   useEffect((): void => {
@@ -21,7 +22,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <FarcasterFrameProvider>
       <Header />
-      <App />
+      <Raffle />
+      <Footer />
     </FarcasterFrameProvider>
   </StrictMode>,
 );

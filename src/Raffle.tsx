@@ -1,15 +1,18 @@
 import { JSX, useState } from 'react';
 import { Wheel } from "react-custom-roulette";
 import Confetti from "react-confetti";
-import './App.css';
+import './Raffle.css';
+import { RaffleResult } from './RaffleResult';
+// import { RaffleResult } from './RaffleResult.tsx';
 
-function App(): JSX.Element {
-  const [labels, setLabels] = useState<{option: string, style: { backgroundColor: string }}[]>([]);
+function Raffle(): JSX.Element {
+  const [labels, setLabels] = useState<{ option: string, style: { backgroundColor: string } }[]>([]);
   const [newLabel, setNewLabel] = useState<string>("");
-  const [selectedLabel, setSelectedLabel] = useState<string|null>(null);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
   const [spinning, setSpinning] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
+  const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
 
   const addLabel = (): void => {
     if (newLabel.trim() !== "") {
@@ -31,15 +34,27 @@ function App(): JSX.Element {
     setSpinning(true);
     const selectedIndex = Math.floor(Math.random() * labels.length);
     setPrizeNumber(selectedIndex);
+    const raffleResult: RaffleResult = {
+      owner: {
+        username: "anyvoid.eth",
+        fid: 1,
+      },
+      participants: labels.map((label) => ({ name: label.option })),
+      winner: {
+        name: labels[selectedIndex].option,
+      },
+      date: new Date().toISOString(),
+    };
+    setRaffleResult(raffleResult);
   };
 
   const emojis: string[] = ["🎉", "🎊", "🏆", "🥳", "👏", "🔥"];
 
   return (
     <div className="container">
-      {showConfetti && 
+      {showConfetti &&
         <div className="confetti">
-          <Confetti 
+          <Confetti
             gravity={0.1}
             wind={0}
           />
@@ -49,18 +64,18 @@ function App(): JSX.Element {
       {selectedLabel && <h2>Congratulations {selectedLabel} {emojis[Math.floor(Math.random() * emojis.length)]}</h2>}
       <button onClick={spinWheel} disabled={labels.length === 0 || spinning}>
         Let's go!
-      </button><br/>
-      <input 
-        type="text" 
-        value={newLabel} 
-        onChange={(e) => setNewLabel(e.target.value)} 
+      </button><br />
+      <input
+        type="text"
+        value={newLabel}
+        onChange={(e) => setNewLabel(e.target.value)}
         placeholder="Enter name"
         disabled={spinning}
       />
       <button onClick={addLabel} disabled={spinning}>Add Participant</button>
-        {labels.length > 0 ? (
-          <div className="wheel-container">
-          <Wheel 
+      {labels.length > 0 ? (
+        <div className="wheel-container">
+          <Wheel
             mustStartSpinning={spinning}
             prizeNumber={prizeNumber}
             data={labels}
@@ -68,7 +83,7 @@ function App(): JSX.Element {
               setSpinning(false);
               setSelectedLabel(labels[prizeNumber].option);
               setShowConfetti(true);
-              setTimeout(() => {setShowConfetti(false);}, 5000);
+              setTimeout(() => { setShowConfetti(false); }, 5000);
             }}
             backgroundColors={["#f9c74f", "#f94144", "#43aa8b", "#577590"]}
             textColors={["#fff"]}
@@ -77,10 +92,10 @@ function App(): JSX.Element {
             outerBorderWidth={2}
             radiusLineWidth={2}
           />
-          </div>
-        ) : (
-          <p>No participant available</p>
-        )}
+        </div>
+      ) : (
+        <p>No participant available</p>
+      )}
       <ul>
         {labels.map((label, index) => (
           <li key={index} style={{ backgroundColor: label.style.backgroundColor }}>
@@ -89,11 +104,9 @@ function App(): JSX.Element {
           </li>
         ))}
       </ul>
-      <footer className="footer">
-        <p>&copy; 2025 - anyvoid.eth - View on <a href="https://github.com/NicolasMugnier/raffle-anyvoid-eth">GitHub</a></p>
-      </footer>
+      <div id="raffle-result">{/**JSON.stringify(raffleResult)**/}</div>
     </div>
   );
 }
 
-export default App
+export default Raffle;
