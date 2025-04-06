@@ -3,7 +3,75 @@ import { Wheel } from "react-custom-roulette";
 import Confetti from "react-confetti";
 import './Raffle.css';
 import { RaffleResult } from './RaffleResult';
-// import { RaffleResult } from './RaffleResult.tsx';
+import { ethers, AbiCoder, id } from "ethers";
+import { Snackbar, Alert } from "@mui/material";
+
+
+
+const storeRaffleOnBlockchain = async (raffleResult: RaffleResult) => {
+
+  // Replace with your contract's address and ABI
+  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Test address
+  const contractABI = [
+    "function storeRaffle(string memory owner,string memory winner,string memory date,string[] memory participants) public"
+  ];
+
+  // Connect to the user's wallet
+  const provider = new ethers.BrowserProvider(window.ethereum); // todo yagmi and farcaster context ?
+  const signer = await provider.getSigner();
+
+  // Create a contract instance
+  const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+  // Prepare the data
+  const owner = raffleResult.owner.username;
+  const winner = raffleResult.winner.name;
+  const date = raffleResult.date;
+  const participants = raffleResult.participants.map((p) => p.name);
+
+  // Send the transaction
+  const tx = await contract.storeRaffle(owner, winner, date, participants);
+  console.log("Transaction sent:", tx.hash);
+
+  // Wait for the transaction to be mined
+  const receipt = await tx.wait();
+  console.log("Transaction confirmed:", receipt);
+};
+
+const runRaffleOnBlockchain = async (owner: string, date: string, participants: string[]): Promise<number> => {
+
+  // Replace with your contract's address and ABI
+  const contractAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F"; // Test address
+  const contractABI = [
+    "function runRaffle(string memory owner,string memory date,string[] memory participants) public returns (uint256)",
+    "event RaffleRun(uint256 indexed winnerIndex)"
+  ];
+
+  // Connect to the user's wallet
+  const provider = new ethers.BrowserProvider(window.ethereum); // todo yagmi and farcaster context ?
+  const signer = await provider.getSigner();
+
+  // Create a contract instance
+  const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+  // Send the transaction
+  const tx = await contract.runRaffle(owner, date, participants);
+  console.log("Transaction sent:", tx.hash);
+
+  // Wait for the transaction to be mined
+  const receipt = await tx.wait();
+  console.log("Transaction confirmed:", receipt);
+
+  const event = receipt.logs.find((log: ethers.Log) => log.topics[0] === id("RaffleRun(uint256)"));
+  if (event !== null) {
+    const winnerIndex = (new AbiCoder()).decode(["uint256"], event.topics[1])[0];
+    console.log("Winner index:", winnerIndex);
+    return winnerIndex;
+  } else {
+    throw new Error("RaffleRun event not found in transaction logs");
+  }
+
+};
 
 function Raffle(): JSX.Element {
   const [labels, setLabels] = useState<{ option: string, style: { backgroundColor: string } }[]>([]);
@@ -12,7 +80,9 @@ function Raffle(): JSX.Element {
   const [spinning, setSpinning] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
-  const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
+  // const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>("");
 
   const addLabel = (): void => {
     if (newLabel.trim() !== "") {
@@ -27,17 +97,12 @@ function Raffle(): JSX.Element {
     setLabels(labels.filter((_, i: number): boolean => i !== index));
   };
 
-  const spinWheel = (): void => {
-    setSelectedLabel(null);
-    setShowConfetti(false);
-    if (labels.length === 0 || spinning) return;
-    setSpinning(true);
-    const selectedIndex = Math.floor(Math.random() * labels.length);
-    setPrizeNumber(selectedIndex);
-    const raffleResult: RaffleResult = {
+  const mintRaffle = async (): Promise<void> => {
+    //const selectedIndex: number = Math.floor(Math.random() * labels.length);
+    /**const raffleResult: RaffleResult = {
       owner: {
-        username: "anyvoid.eth",
-        fid: 1,
+        username: "anyvoid.eth", // TODO
+        fid: 1, // TODO
       },
       participants: labels.map((label) => ({ name: label.option })),
       winner: {
@@ -45,7 +110,28 @@ function Raffle(): JSX.Element {
       },
       date: new Date().toISOString(),
     };
-    setRaffleResult(raffleResult);
+    setRaffleResult(raffleResult);**/
+
+    const owner: string = 'anyvoid.eth'; // TODO
+    const date: string = new Date().toISOString();
+    const participants: string[] = labels.map((label) => label.option);
+    try {
+      // await storeRaffleOnBlockchain(raffleResult);
+      const selectedIndex: number = await runRaffleOnBlockchain(owner, date, participants);
+      await spinWheel(selectedIndex);
+    } catch (e: any) {
+      console.log(e);
+      setSnackbarMessage(e.shortMessage);
+      setSnackbarOpen(true);
+    }
+  }
+
+  const spinWheel = async (selectedIndex: number): Promise<void> => {
+    setSelectedLabel(null);
+    setShowConfetti(false);
+    if (labels.length === 0 || spinning) return;
+    setSpinning(true);
+    setPrizeNumber(selectedIndex);
   };
 
   const emojis: string[] = ["🎉", "🎊", "🏆", "🥳", "👏", "🔥"];
@@ -62,7 +148,7 @@ function Raffle(): JSX.Element {
       }
       <h1>Raffle</h1>
       {selectedLabel && <h2>Congratulations {selectedLabel} {emojis[Math.floor(Math.random() * emojis.length)]}</h2>}
-      <button onClick={spinWheel} disabled={labels.length === 0 || spinning}>
+      <button onClick={mintRaffle} disabled={labels.length === 0 || spinning}>
         Let's go!
       </button><br />
       <input
@@ -104,6 +190,19 @@ function Raffle(): JSX.Element {
           </li>
         ))}
       </ul>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+
+      >
+        <Alert
+          severity="error"
+          onClose={() => setSnackbarOpen(false)}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <div id="raffle-result">{/**JSON.stringify(raffleResult)**/}</div>
     </div>
   );

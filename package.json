@@ -10,7 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@farcaster/frame-sdk": "^0.0.28",
+    "@metamask/providers": "^21.0.0",
+    "@mui/material": "^7.0.1",
+    "ethers": "^6.13.5",
     "react": "^19.0.0",
     "react-confetti": "^6.2.2",
     "react-custom-roulette": "^1.4.1",
