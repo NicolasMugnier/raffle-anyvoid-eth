@@ -2,41 +2,8 @@ import { JSX, useState } from 'react';
 import { Wheel } from "react-custom-roulette";
 import Confetti from "react-confetti";
 import './Raffle.css';
-import { RaffleResult } from './RaffleResult';
 import { ethers, AbiCoder, id } from "ethers";
 import { Snackbar, Alert } from "@mui/material";
-
-
-
-const storeRaffleOnBlockchain = async (raffleResult: RaffleResult) => {
-
-  // Replace with your contract's address and ABI
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Test address
-  const contractABI = [
-    "function storeRaffle(string memory owner,string memory winner,string memory date,string[] memory participants) public"
-  ];
-
-  // Connect to the user's wallet
-  const provider = new ethers.BrowserProvider(window.ethereum); // todo yagmi and farcaster context ?
-  const signer = await provider.getSigner();
-
-  // Create a contract instance
-  const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-  // Prepare the data
-  const owner = raffleResult.owner.username;
-  const winner = raffleResult.winner.name;
-  const date = raffleResult.date;
-  const participants = raffleResult.participants.map((p) => p.name);
-
-  // Send the transaction
-  const tx = await contract.storeRaffle(owner, winner, date, participants);
-  console.log("Transaction sent:", tx.hash);
-
-  // Wait for the transaction to be mined
-  const receipt = await tx.wait();
-  console.log("Transaction confirmed:", receipt);
-};
 
 const runRaffleOnBlockchain = async (owner: string, date: string, participants: string[]): Promise<number> => {
 
