@@ -1,11 +1,11 @@
 import { JSX, useEffect, useState } from "react";
 import './Header.css';
 import FrameSDK from '@farcaster/frame-sdk';
-import { UserContext } from '@farcaster/frame-core/dist/context';
+import { FrameContext, UserContext } from '@farcaster/frame-core/dist/context';
 
 const farcasterUser = async (): Promise<UserContext> => {
     console.log("Fetching user context...");
-    const context = await FrameSDK.context;
+    const context: FrameContext = await FrameSDK.context;
     const user: UserContext = context?.user;
     console.log("User context received:", user);
 
