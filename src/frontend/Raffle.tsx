@@ -1,21 +1,36 @@
-import { JSX, useState } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { Wheel } from "react-custom-roulette";
 import Confetti from "react-confetti";
 import './Raffle.css';
 import { ethers, AbiCoder, id } from "ethers";
 import { Snackbar, Alert } from "@mui/material";
+import FrameSDK from '@farcaster/frame-sdk';
+import { FrameContext, UserContext } from '@farcaster/frame-core/dist/context';
+
+const farcasterUser = async (): Promise<UserContext> => {
+  console.log("Fetching user context...");
+  const context: FrameContext = await FrameSDK.context;
+  const user: UserContext = context?.user;
+  console.log("User context received:", user);
+
+  if (!user?.fid) {
+    throw new Error("User object is invalid or fid is missing.");
+  }
+
+  return user;
+}
 
 const runRaffleOnBlockchain = async (owner: string, date: string, participants: string[]): Promise<number> => {
 
-  // Replace with your contract's address and ABI
-  const contractAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F"; // Test address
+  // TODO : deploy contract on base mainnet
+  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const contractABI = [
     "function runRaffle(string memory owner,string memory date,string[] memory participants) public returns (uint256)",
     "event RaffleRun(uint256 indexed winnerIndex)"
   ];
 
   // Connect to the user's wallet
-  const provider = new ethers.BrowserProvider(window.ethereum); // todo yagmi and farcaster context ?
+  const provider = new ethers.BrowserProvider(window.ethereum);
   const signer = await provider.getSigner();
 
   // Create a contract instance
@@ -38,7 +53,7 @@ const runRaffleOnBlockchain = async (owner: string, date: string, participants: 
     throw new Error("RaffleRun event not found in transaction logs");
   }
 
-};
+}
 
 function Raffle(): JSX.Element {
   const [labels, setLabels] = useState<{ option: string, style: { backgroundColor: string } }[]>([]);
@@ -47,9 +62,21 @@ function Raffle(): JSX.Element {
   const [spinning, setSpinning] = useState<boolean>(false);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
-  // const [raffleResult, setRaffleResult] = useState<RaffleResult | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      await farcasterUser().then((user: UserContext) => {
+        setUsername(user.username ?? '');
+      }).catch((error: Error) => {
+        console.log(error);
+      });
+    };
+
+    fetchUser();
+  }, []);
 
   const addLabel = (): void => {
     if (newLabel.trim() !== "") {
@@ -65,25 +92,10 @@ function Raffle(): JSX.Element {
   };
 
   const mintRaffle = async (): Promise<void> => {
-    //const selectedIndex: number = Math.floor(Math.random() * labels.length);
-    /**const raffleResult: RaffleResult = {
-      owner: {
-        username: "anyvoid.eth", // TODO
-        fid: 1, // TODO
-      },
-      participants: labels.map((label) => ({ name: label.option })),
-      winner: {
-        name: labels[selectedIndex].option,
-      },
-      date: new Date().toISOString(),
-    };
-    setRaffleResult(raffleResult);**/
-
-    const owner: string = 'anyvoid.eth'; // TODO
+    const owner: string = username ?? 'unknown';
     const date: string = new Date().toISOString();
     const participants: string[] = labels.map((label) => label.option);
     try {
-      // await storeRaffleOnBlockchain(raffleResult);
       const selectedIndex: number = await runRaffleOnBlockchain(owner, date, participants);
       await spinWheel(selectedIndex);
     } catch (e: any) {
@@ -170,7 +182,6 @@ function Raffle(): JSX.Element {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      <div id="raffle-result">{/**JSON.stringify(raffleResult)**/}</div>
     </div>
   );
 }
